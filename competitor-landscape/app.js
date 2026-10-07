@@ -1,0 +1,7 @@
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reveals=[...document.querySelectorAll('.reveal')];
+if(!reduce){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});reveals.forEach(x=>io.observe(x));}else reveals.forEach(x=>x.classList.add('in'));
+const counters=[...document.querySelectorAll('[data-count]')];
+const cio=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;const el=e.target,end=+el.dataset.count,start=performance.now(),dur=900;function tick(t){const p=Math.min(1,(t-start)/dur),v=Math.round(end*(1-Math.pow(1-p,3)));el.textContent=v+(end===41?'%':'');if(p<1)requestAnimationFrame(tick)}requestAnimationFrame(tick);cio.unobserve(el)}),{threshold:.7});counters.forEach(x=>cio.observe(x));
+const prog=document.querySelector('.progress i'),nav=[...document.querySelectorAll('.nav a')],secs=[...document.querySelectorAll('.slide')];
+function sync(){const h=document.documentElement.scrollHeight-innerHeight;prog.style.width=(h?scrollY/h*100:0)+'%';let best=0,dist=Infinity;secs.forEach((s,i)=>{const d=Math.abs(s.getBoundingClientRect().top-innerHeight*.33);if(d<dist){dist=d;best=i}});nav.forEach((a,i)=>a.classList.toggle('active',i===best));}addEventListener('scroll',sync,{passive:true});addEventListener('resize',sync);sync();
